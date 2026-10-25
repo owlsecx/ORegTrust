@@ -18,25 +18,18 @@
 
 ## 📌 Overview
 
-Container image trust & registry configuration auditor (policy.json, registries.conf, sigstore, containerd, CRI-O)
+ORegTrust is an offline, read-only auditor for the container image trust chain used by Podman, Buildah, Skopeo, CRI-O, containerd and Docker. It analyses policy.json signature policies, registries configuration, container engine defaults and stored credentials for weaknesses. Credentials are always masked.
 
 ---
 
 ## ✨ Features
 
-- Offline, read-only auditor for the container image trust chain used by Podman / Buildah / Skopeo / CRI-O / containerd / Docker engine
-- policy.json signature-policy analyzer — default insecureAcceptAnything, missing signedBy / sigstoreSigned on production registries, key paths, Fulcio / Rekor, signedIdentity strength
-- registries.conf (+ registries.conf.d drop-ins) — insecure registries, http mirrors, short-name squatting (docker.io in unqualified search), short-name-mode, blocked registries, aliases, v1 format
-- registries.d sigstore lookaside (http / staging)
-- containers.conf engine defaults — seccomp, AppArmor, capabilities, host namespaces, pids_limit, no_new_privileges, pull_policy, remote TCP endpoints
-- storage.conf — vfs driver, overlay nodev, stores
-- containerd config.toml mirrors / TLS / auth and certs.d hosts.toml skip_verify / http
-- CRI-O crio.conf image + runtime defaults
-- Docker daemon.json insecure-registries / TCP hosts
-- auth.json / ~/.docker/config.json plaintext creds (always masked), credsStore, file permissions
-- 100+ rules with severity, CWE, MITRE ATT&CK, fix
-- Score + grade A+…F, hardened config templates
-- TXT / MD / JSON / CSV / SARIF exports, --fail-on, --list-rules, --explain, --demo self-test
+- policy.json signature-policy analysis (insecureAcceptAnything, signedBy, sigstore)
+- registries.conf review for insecure registries, http mirrors and short-name squatting
+- containers.conf engine defaults (seccomp, AppArmor, capabilities, namespaces, pull policy)
+- storage.conf, containerd config.toml and CRI-O crio.conf checks
+- Docker daemon.json insecure-registries/TCP-host detection and auth.json credential review (masked)
+- Rule catalogue, hardened templates, multiple output formats and a CI fail-on gate
 
 ---
 
@@ -50,7 +43,10 @@ Container image trust & registry configuration auditor (policy.json, registries.
 ## 🚀 Usage
 
 ```bash
-./ORegTrust
+./ORegTrust --audit
+./ORegTrust --file /etc/containers/policy.json
+./ORegTrust --audit --root /mnt/collected --fail-on high
+./ORegTrust --help
 ```
 
 ---
